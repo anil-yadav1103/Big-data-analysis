@@ -1,0 +1,38 @@
+# Install required libraries
+!pip install pyspark dask
+
+# Import necessary libraries
+from pyspark.sql import SparkSession
+import dask.dataframe as dd
+from google.colab import files
+import shutil  # For zipping PySpark output
+
+# Start a Spark session
+spark = SparkSession.builder.appName("BigDataAnalysis").getOrCreate()
+
+# Upload CSV file manually
+uploaded = files.upload()
+file_name = list(uploaded.keys())[0]  # Get uploaded file name
+
+# Read CSV with PySpark
+df_spark = spark.read.csv(f"/content/{file_name}", header=True, inferSchema=True)
+df_spark.show(5)  # Display first 5 rows
+
+# Read CSV with Dask
+df_dask = dd.read_csv(f"/content/{file_name}", header=0)
+print(df_dask.head())
+
+# 🚀 PySpark Processing & Save
+df_spark.write.csv("/content/output_spark", header=True, mode="overwrite")
+
+# Zip PySpark Output (Needed for Downloading)
+shutil.make_archive("/content/output_spark", 'zip', "/content/output_spark")
+
+# 🚀 Dask Processing & Save
+df_dask.to_csv("/content/output_dask.csv", index=False, single_file=True)
+
+# Download Processed Files
+files.download("/content/output_spark.zip")  # PySpark output
+files.download("/content/output_dask.csv")   # Dask output
+
+print("✅ Processing & Download Completed!")
