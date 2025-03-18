@@ -32,3 +32,6 @@ Read large datasets in chunks
 Perform parallel computations
 Optimize memory usage with lazy evaluation
 Visualize data and computation graphs
+
+OUTPUT:
+![Image](https://github.com/user-attachments/assets/0d790bae-1bad-499b-9349-b07039318be7)
